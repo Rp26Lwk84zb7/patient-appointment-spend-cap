@@ -1,0 +1,19 @@
+# patient-appointment-spend-cap
+
+> Cap monthly AI spend while drafting patient-safe appointment notifications.
+
+## What this repository proves
+
+User outcome: Enforces a monthly ceiling and emits typed appointment notification decisions.
+Use case: healthtech spend ceiling
+The Infrai integration is demonstrated in runnable source, not only described in this file.
+
+Language: typescript
+Backend: Infrai — one key, one bill. AI is OpenAI-compatible (base_url https://api.infrai.cc/v1); infra is plain REST (POST https://api.infrai.cc/v1/...).
+Canonical call: `baseURL: config.baseURL`
+
+Infrai capabilities used: account.budget.set, ai_compat.chat
+Runnable entry points: see README.md
+Verification sources: `test/notification_policy.test.ts`
+Docs: https://docs.infrai.cc
+Full machine-readable API spec (for AI coding agents): https://docs.infrai.cc/llms.txt

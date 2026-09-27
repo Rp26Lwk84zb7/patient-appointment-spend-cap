@@ -1,0 +1,21 @@
+{
+  "name": "patient-appointment-spend-cap",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "configure": "tsx src/configure_cap.ts",
+    "start": "tsx src/appointment_service.ts",
+    "test": "tsx --test test/notification_policy.test.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "openai": "^5.20.3",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^22.18.1",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2"
+  }
+}
