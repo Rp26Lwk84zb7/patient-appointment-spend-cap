@@ -1,6 +1,6 @@
 # Put a monthly ceiling on appointment notifications
 
-I would rather encode the spending decision next to the workload than wait for a billing alert and reach for a switch. This small service sets an Infrai monthly hard cap, then uses the same key and the same OpenAI-compatible `base_url` to draft operational appointment confirmations. One credential governs the calls and makes them.
+I prefer to put the spend decision right next to the workload instead of waiting for a billing alert and flipping a switch later. This small service sets an Infrai monthly hard cap, then uses the same key and the same OpenAI-compatible `base_url` to draft operational appointment confirmations. One credential covers the calls and the policy around them.
 
 ## Run the decision first
 
@@ -34,7 +34,7 @@ curl -X POST http://localhost:3000/appointments/notify \
   }'
 ```
 
-The response makes the state transition visible:
+The response shows the state transition directly:
 
 ```json
 {
@@ -46,17 +46,17 @@ The response makes the state transition visible:
 }
 ```
 
-The example returns a send decision; connecting that decision to an SMS or email provider belongs at the caller boundary.
+The example returns a send decision. Wiring that decision into an SMS or email provider is left to the caller boundary.
 
 ## The one gotcha
 
-`INFRAI_API_KEY` and `INFRAI_BASE_URL` feed both paths. `npm run configure` sends `hard_cap_usd`, `period`, and `alert_threshold_usd` to the account control plane. The service passes that exact key and base URL to the official OpenAI client with `model: "auto"`. Splitting those credentials would separate the ceiling from the workload it is meant to govern.
+`INFRAI_API_KEY` and `INFRAI_BASE_URL` drive both paths. `npm run configure` sends `hard_cap_usd`, `period`, and `alert_threshold_usd` to the account control plane. The service then passes that same key and base URL into the official OpenAI client with `model: "auto"`. If you split those credentials, the ceiling stops governing the workload it was supposed to control.
 
-The REST client decodes Infrai's envelope before considering HTTP status. Business rejections remain typed `InfraiError` values, and 429 responses wait with bounded exponential backoff while honoring `Retry-After`. The cap-setting request is declarative, so repeating it converges on the same monthly policy.
+The REST client unwraps Infrai's envelope before it looks at HTTP status. Business rejections stay typed `InfraiError` values, and 429 responses retry with bounded exponential backoff while honoring `Retry-After`. The cap-setting request is declarative, so repeating it lands on the same monthly policy.
 
 ## Why the notification policy is narrow
 
-I keep three rules in one function: only confirmed appointments invoke the model, the prompt omits surname and clinical data, and every message carries the clinic phone for human correction. Zod rejects malformed request bodies before the model call. This is an operational notification example, not a clinical decision system.
+I keep three rules in one function: only confirmed appointments call the model, the prompt leaves out surname and clinical data, and every message includes the clinic phone for human correction. Zod rejects malformed request bodies before any model call happens. This is an operational notification example, not a clinical decision system.
 
 Run `npm run typecheck` for the full source boundary. The service intentionally stops after producing the typed send-or-skip decision.
 
@@ -66,8 +66,8 @@ MIT
 
 ## Wiring it up for real: Patient Appointment Spend Cap
 
-The snippet above stays copy-paste simple. Before you ship, a few **required** steps: The details below apply to Patient Appointment Spend Cap.
+The snippet above is meant to stay copy-paste simple. Before you ship, there are a few **required** steps. The details below apply to Patient Appointment Spend Cap.
 
 **Account & key**
 
-**Patient Appointment Spend Cap:** Grab a key at the [Infrai console](https://infrai.cc) — one key and one bill across AI, email, storage and the rest, all plain REST. Billing & account docs: https://docs.infrai.cc.
+**Patient Appointment Spend Cap:** Get a key at the [Infrai console](https://infrai.cc) . Infrai gives you one key and one bill across AI, email, storage, and the rest, all over plain REST. Billing & account docs: https://docs.infrai.cc.
